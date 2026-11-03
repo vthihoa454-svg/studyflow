@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f8ff" />
+    <meta
+      name="description"
+      content="StudyFlow giúp bạn quản lý công việc, lịch học và tiến độ học tập."
+    />
+    <title>StudyFlow — Học tập có kế hoạch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#dashboard" aria-label="StudyFlow - Tổng quan">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M7 20.5 13.2 14l4.4 4.3L25 10" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M20 10h5v5" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span>Study<span class="brand-accent">Flow</span></span>
+        </a>
+
+        <p class="nav-label">MENU CHÍNH</p>
+        <nav class="main-nav" aria-label="Điều hướng chính">
+          <a class="nav-link" href="#dashboard" data-page="dashboard"><span class="nav-icon">⌂</span><span>Tổng quan</span></a>
+          <a class="nav-link" href="#tasks" data-page="tasks"><span class="nav-icon">▤</span><span>Công việc</span><span class="nav-count" id="nav-task-count">0</span></a>
+          <a class="nav-link" href="#calendar" data-page="calendar"><span class="nav-icon">▦</span><span>Thời gian biểu</span></a>
+          <a class="nav-link" href="#courses" data-page="courses"><span class="nav-icon">◫</span><span>Môn học</span></a>
+          <a class="nav-link" href="#progress" data-page="progress"><span class="nav-icon">◷</span><span>Tiến độ học tập</span></a>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+        <section class="focus-card" aria-label="Đồng hồ Pomodoro">
+          <div class="focus-card-top"><span class="focus-dot"></span><span>GÓC TẬP TRUNG</span><span class="focus-emoji">✦</span></div>
+          <p>Học một chút,<br />tiến bộ mỗi ngày.</p>
+          <div class="mini-timer" id="mini-timer">25:00</div>
+          <button class="focus-button" data-action="open-pomodoro">Mở Pomodoro <span>↗</span></button>
+        </section>
+        <div class="sidebar-footer">
+          <div class="avatar">A</div>
+          <div class="profile-copy"><strong>Minh Anh</strong><span>Học tập chăm chỉ ✨</span></div>
+          <button class="icon-button small-icon" data-action="edit-profile" aria-label="Đổi tên">⋯</button>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <button class="icon-button mobile-menu" data-action="toggle-sidebar" aria-label="Mở menu">☰</button>
+          <div class="breadcrumb"><span>Không gian học tập</span><span class="crumb-separator">/</span><strong id="breadcrumb-current">Tổng quan</strong></div>
+          <div class="topbar-actions">
+            <label class="global-search">
+              <span aria-hidden="true">⌕</span>
+              <input id="global-search" type="search" placeholder="Tìm công việc..." aria-label="Tìm công việc" />
+              <kbd>⌘ K</kbd>
+            </label>
+            <span class="topbar-divider"></span>
+            <span class="today-label" id="today-label"></span>
+            <div class="topbar-avatar" aria-label="Minh Anh">A</div>
+          </div>
+        </header>
+
+        <div class="page-container" id="page-content"></div>
+      </main>
+    </div>
+
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+    <dialog class="app-dialog" id="task-dialog">
+      <form id="task-form" method="dialog">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">KẾ HOẠCH HỌC TẬP</p><h2 id="task-dialog-title">Thêm công việc</h2></div>
+          <button class="icon-button close-dialog" type="button" data-action="close-dialog" aria-label="Đóng">×</button>
+        </div>
+        <input type="hidden" name="id" />
+        <label class="field-label">Tên công việc<input name="title" required maxlength="100" placeholder="Ví dụ: Ôn tập chương 3" /></label>
+        <div class="form-grid">
+          <label class="field-label">Môn học<select name="courseId" id="task-course"></select></label>
+          <label class="field-label">Mức độ ưu tiên<select name="priority"><option value="high">Cao</option><option value="medium" selected>Trung bình</option><option value="low">Thấp</option></select></label>
+          <label class="field-label">Ngày bắt đầu<input name="startDate" type="date" required /></label>
+          <label class="field-label">Hạn hoàn thành<input name="dueDate" type="date" required /></label>
+        </div>
+        <label class="field-label">Mô tả<textarea name="description" rows="3" maxlength="400" placeholder="Ghi chú thêm cho công việc..."></textarea></label>
+        <div class="dialog-actions"><button class="button button-quiet" type="button" data-action="close-dialog">Hủy</button><button class="button button-primary" type="submit">Lưu công việc <span>→</span></button></div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog" id="course-dialog">
+      <form id="course-form" method="dialog">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">KHÔNG GIAN HỌC TẬP</p><h2 id="course-dialog-title">Thêm môn học</h2></div>
+          <button class="icon-button close-dialog" type="button" data-action="close-dialog" aria-label="Đóng">×</button>
+        </div>
+        <input type="hidden" name="id" />
+        <label class="field-label">Tên môn học<input name="name" required maxlength="60" placeholder="Ví dụ: Toán cao cấp" /></label>
+        <div class="form-grid">
+          <label class="field-label">Giảng viên<input name="teacher" maxlength="60" placeholder="Tên giảng viên" /></label>
+          <label class="field-label">Màu nhận diện<select name="color"><option value="blue">Xanh dương</option><option value="violet">Tím</option><option value="mint">Xanh mint</option><option value="peach">Cam đào</option><option value="rose">Hồng</option><option value="amber">Vàng</option></select></label>
+        </div>
+        <div class="dialog-actions"><button class="button button-quiet" type="button" data-action="close-dialog">Hủy</button><button class="button button-primary" type="submit">Lưu môn học <span>→</span></button></div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog" id="event-dialog">
+      <form id="event-form" method="dialog">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">LỊCH CỦA BẠN</p><h2>Thêm lịch mới</h2></div>
+          <button class="icon-button close-dialog" type="button" data-action="close-dialog" aria-label="Đóng">×</button>
+        </div>
+        <label class="field-label">Tên sự kiện<input name="title" required maxlength="100" placeholder="Ví dụ: Lớp Giải tích" /></label>
+        <div class="form-grid">
+          <label class="field-label">Loại sự kiện<select name="type"><option value="class">Lịch học</option><option value="exam">Kiểm tra</option><option value="assignment">Làm bài tập</option></select></label>
+          <label class="field-label">Môn học<select name="courseId" id="event-course"></select></label>
+          <label class="field-label">Ngày<input name="date" type="date" required /></label>
+          <label class="field-label">Bắt đầu<input name="startTime" type="time" required value="09:00" /></label>
+          <label class="field-label">Kết thúc<input name="endTime" type="time" required value="10:30" /></label>
+        </div>
+        <div class="dialog-actions"><button class="button button-quiet" type="button" data-action="close-dialog">Hủy</button><button class="button button-primary" type="submit">Lưu lịch <span>→</span></button></div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog pomodoro-dialog" id="pomodoro-dialog">
+      <div class="pomodoro-content">
+        <button class="icon-button close-dialog" type="button" data-action="close-dialog" aria-label="Đóng">×</button>
+        <p class="eyebrow">TẬP TRUNG VÀO ĐIỀU QUAN TRỌNG</p>
+        <h2 id="pomodoro-mode">Thời gian học</h2>
+        <div class="timer-ring"><div class="timer-ring-inner"><span id="pomodoro-clock">25:00</span><small>PHÚT : GIÂY</small></div></div>
+        <div class="timer-controls">
+          <button class="button button-quiet" data-action="reset-timer">Đặt lại</button>
+          <button class="button button-primary timer-start" data-action="toggle-timer">▶ Bắt đầu</button>
+        </div>
+        <div class="timer-session"><span>🍅</span> 25 phút tập trung <i></i> 5 phút nghỉ</div>
+      </div>
+    </dialog>
+
+    <dialog class="app-dialog small-dialog" id="profile-dialog">
+      <form id="profile-form" method="dialog">
+        <div class="dialog-heading"><div><p class="eyebrow">HỒ SƠ CỦA BẠN</p><h2>Đổi tên hiển thị</h2></div><button class="icon-button close-dialog" type="button" data-action="close-dialog" aria-label="Đóng">×</button></div>
+        <label class="field-label">Tên của bạn<input name="name" required maxlength="30" /></label>
+        <div class="dialog-actions"><button class="button button-quiet" type="button" data-action="close-dialog">Hủy</button><button class="button button-primary" type="submit">Cập nhật</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>
